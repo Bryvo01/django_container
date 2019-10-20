@@ -52,6 +52,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'scheduler.urls'
 
+# where the static files are
+STATIC_ROOT = ''
+
+# where the user files are
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+MEDIA_URL = '/media/'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -79,6 +87,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
         'USER': 'postgres',
+        #'USER': 'django_test',
+        #'PASSWORD': 'password',
         'HOST': 'db',
         'PORT': 5432,
     }
