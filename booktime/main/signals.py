@@ -10,6 +10,7 @@ THUMBNAIL_SIZE = (300, 300)
 
 logger = logging.getLogger(__name__)
 
+
 @receiver(pre_save, sender=ProductImage)
 def generate_thumbnail(sender, instance, **kwargs):
     logger.info(f'Generating thumbnail for product {instance.product.id}')
@@ -21,6 +22,6 @@ def generate_thumbnail(sender, instance, **kwargs):
     temp_thumb.seek(0)
     # set save=False, otherwise it will run in an infinite loop
     instance.thumbnail.save(instance.image.name,
-                            ContentFile(temp_thumb()),
+                            ContentFile(temp_thumb.read()),
                             save=False,)
     temp_thumb.close()

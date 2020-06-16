@@ -1,0 +1,56 @@
+[
+{
+  "model": "main.producttag",
+  "fields": {
+    "name": "Opensource",
+    "slug": "opensource",
+    "description": "Collections of books dedicated to opensource",
+    "active": true
+  }
+},
+{
+  "model": "main.producttag",
+  "fields": {
+    "name": "Romance",
+    "slug": "romance",
+    "description": "Collection of romance books",
+    "active": true
+  }
+},
+{
+  "model": "main.producttag",
+  "fields": {
+    "name": "Drama",
+    "slug": "drama",
+    "description": "Collection of drama books",
+    "active": true
+  }
+},
+{
+  "model": "main.producttag",
+  "fields": {
+    "name": "Science Fiction",
+    "slug": "science-fiction",
+    "description": "Collection of science fiction books",
+    "active": true
+  }
+},
+{
+  "model": "main.producttag",
+  "fields": {
+    "name": "Teamwork",
+    "slug": "teamwork",
+    "description": "Collection of books on making teams work",
+    "active": true
+  }
+},
+{
+  "model": "main.producttag",
+  "fields": {
+    "name": "Finance",
+    "slug": "finance",
+    "description": "Collection of books about finance",
+    "active": true
+  }
+}
+]
