@@ -1,0 +1,5 @@
+FROM postgres:latest
+ENV POSTGRES_USER='django'
+ENV POSTGRES_PASSWORD='password'
+ENV POSTGRES_DB='django_bookstore'
+EXPOSE 5432
