@@ -25,7 +25,7 @@
     </tr>
     <tr>
       <th>Tags</th>
-      <td>{{ object.tags.all|join:","|default:No tags available" }}</td>
+      <td>{{ object.tags.all|join:","|default:"No tags available" }}</td>
     </tr>
     <tr>
       <th>In stock</th>
@@ -36,5 +36,5 @@
       <td>{{ object.date_updated|date:"F Y" }}</td>
     </tr>
   </table>
-  <a href="{% url "add_to_basket" %}?product_id={{ object.id }}">Add to basket</a>
+  {% comment %}<a href="{% url "add_to_basket" %}?product_id={{ object.id }}">Add to basket</a>{% endcomment %}
 {% endblock content %}

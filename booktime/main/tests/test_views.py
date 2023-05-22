@@ -35,7 +35,8 @@ class TestPage(TestCase):
                                       slug='tale-two-cities',
                                       price=Decimal('2.00'),
                                       active=False,
-                                      )(name='The cathedral and the bazaar',
+                                      )
+        models.Product.objects.create(name='The cathedral and the bazaar',
                                       slug='cathedral-bazaar',
                                       price=Decimal('10.00'),
                                       )
