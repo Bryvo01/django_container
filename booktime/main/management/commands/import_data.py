@@ -33,6 +33,7 @@ class Command(BaseCommand):
                                    row['image_filename'],
                                   ), 'rb',) as f:
                 image = models.ProductImage(
+                    name=row['name'],
                     product=product,
                     image=ImageFile(f, name=row['image_filename']),
                 )

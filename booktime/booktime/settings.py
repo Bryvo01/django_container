@@ -25,7 +25,7 @@ SECRET_KEY = 'oyzc#uys75rt%v+ijn7f5g)5n^fs$p9jt-89hk(clecf6lde=4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['dumdums.garflak.com']
+ALLOWED_HOSTS = ['dumdums.garflak.com', 'localhost']
 
 # Application definition
 

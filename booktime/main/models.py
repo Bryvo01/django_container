@@ -8,9 +8,11 @@ class ActiveManager(models.Manager):
     def active(self):
         return self.filter(active=True)
 
+
 class ProductTagManager(models.Manager):
     def get_by_natural_key(self, slug):
         return self.get(slug=slug)
+
 
 class ProductTag(models.Model):
     name = models.CharField(max_length=40)
@@ -24,6 +26,7 @@ class ProductTag(models.Model):
 
     def natural_key(self):
         return (self.slug,)
+
 
 class Product(models.Model):
     name = models.CharField(max_length=32)
@@ -39,13 +42,16 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+
 class ProductImage(models.Model):
+    name = models.CharField(max_length=32)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     thumbnail = models.ImageField(upload_to='product-thumbnails', null=True)
     image = models.ImageField(upload_to='product-images')
 
     def __str__(self):
         return self.name
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -71,7 +77,8 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True')
         
         return self._create_user(email, password, **extra_fields)
-    
+
+
 class User(AbstractUser):
     username = None
     email = models.EmailField('email address', unique=True)
@@ -80,3 +87,27 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     objects = UserManager()
+
+
+class Address(models.Model):
+    SUPPORTED_COUNTRIES = (
+        ('uk', 'United Kingdom'),
+        ('us', 'United States of America'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=60)
+    address1 = models.CharField('Address line 1', max_length=60)
+    address2 = models.CharField('Address line 2', max_length=60, blank=True)
+    zip_code = models.CharField('ZIP / Postal code', max_length=12)
+    city = models.CharField(max_length=60)
+    country = models.CharField(max_length=3, choices=SUPPORTED_COUNTRIES)
+
+    def __str__(self):
+        return ', '.join([
+            self.name,
+            self.address1,
+            self.address2,
+            self.zip_code,
+            self.city,
+            self.country
+        ])
