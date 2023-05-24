@@ -24,9 +24,7 @@ class TestPage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'main/contact_form.html')
         self.assertContains(response, 'BookTime')
-        self.assertIsInstance(
-            response.context["form"], forms.ContactForm
-        )
+        self.assertIsInstance(response.context["form"], forms.ContactForm)
 
     def test_product_page_returns_active(self):
         models.Product.objects.create(name='The cathedral and the bazaar',
@@ -46,8 +44,7 @@ class TestPage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'BookTime')
         product_list = models.Product.objects.active().order_by('name')
-        self.assertEqual(list(response.context['object_list']),
-                         list(product_list),)
+        self.assertEqual(list(response.context['object_list']), list(product_list),)
 
     def test_products_page_filters_by_tags_and_active(self):
         cb = models.Product.objects.create(name='The cathedral and the bazaar',
@@ -59,14 +56,12 @@ class TestPage(TestCase):
                                       slug='microsoft-windows-guide',
                                       price=Decimal('12.00'),
                                       )
-        response = self.client.get(reverse('products',
-                                           kwargs={'tag': 'opensource'}))
+        response = self.client.get(reverse('products', kwargs={'tag': 'opensource'}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'BookTime')
         product_list = (models.Product.objects.active()
                         .filter(tags__slug='opensource').order_by('name'))
-        self.assertEqual(list(response.context['object_list']),
-                         list(product_list))
+        self.assertEqual(list(response.context['object_list']), list(product_list))
     
     def test_user_signup_page_loads_correctly(self):
         response = self.client.get(reverse('signup'))
@@ -87,3 +82,58 @@ class TestPage(TestCase):
         self.assertTrue(models.User.objects.filter(email='user@domain.com' ).exists())
         self.assertTrue(auth.get_user(self.client).is_authenticated)
         mock_send.assert_called_once()
+
+    def test_address_list_page_returns_only_owned(self):
+        user1 = models.User.objects.create_user('user1', 'pw432joij')
+        user2 = models.User.objects.create_user('user2', 'pw432joij')
+        models.Address.objects.create(user=user1,
+                                      name='John Kimball',
+                                      address1='101 Kimball Lane',
+                                      address2='',
+                                      city='London',
+                                      country='uk',
+                                      )
+        models.Address.objects.create(user=user2,
+                                      name='Marc Kimball',
+                                      address1='123 Deacon Road',
+                                      address2='',
+                                      city='London',
+                                      country='uk',
+                                      )
+        self.client.force_login(user2)
+        response = self.client.get(reverse('address_list'))
+        self.assertEqual(response.status_code, 200)
+        address_list = models.Address.objects.filter(user=user2)
+        self.assertEqual(list(response.context['object_list']), list(address_list))
+    
+    def test_address_create_stores_user(self):
+        user1 = models.User.objects.create_user('user1', 'pw432joij')
+        post_data = {
+            'name': 'John Kercher',
+            'address1': '1 av st',
+            'address2': '',
+            'zip_code': '12345',
+            'city': 'Mancheter',
+            'country': 'uk',
+        }
+        self.client.force_login(user1)
+        self.client.post(reverse('address_create'), post_data)
+        self.assertTrue(models.Address.objects.filter(user=user1).exists())
+
+    def test_add_to_basket_loggedin_works(self):
+        user1 = models.User.objects.create_user('user1@a.com', 'pw432joij')
+        cb = models.Product.objects.create(name='The cathedral and the bazaar',
+                                           slug='cathedral-bazaar',
+                                           price=('10.00'),
+                                           )
+        w = models.Product.objects.create(name='Microsoft Windows guide',
+                                          slug='microsoft-windows-guide',
+                                          price=Decimal('12.00'),
+                                          )
+        self.client.force_login(user1)
+        response = self.client.get(reverse('add_to_basket'), {'product_id': cb.id})
+        #response = self.client.get(reverse('add_to_basket'), {'product_id': cb.id})
+        self.assertTrue(models.Basket.objects.filter(user=user1).exists())
+        self.assertEqual(models.BasketLine.objects.filter(basket__user=user1).count(), 1)
+        response = self.client.get(reverse('add_to_basket'), {'product_id': w.id})
+        self.assertEqual(models.BasketLine.objects.filter(basket__user=user1).count(), 2)
